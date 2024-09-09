@@ -1,4 +1,4 @@
- 1. from ryu.base import app_manager
+  1. from ryu.base import app_manager
   2. from ryu.controller import ofp_event
   3. from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER, import set_ev_cls
   4. 
@@ -30,13 +30,13 @@
  30.  
  31.         match = parser.OFPMatch()
  32.         actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER, ofproto.OFPCML_NO_BUFFER)]
- 33.         self.add_flow(datapath, 0, match, actions)
+ 33.         self.install_flow(datapath, 0, match, actions)
  34.  
  35.     def add_flow(self, datapath, priority, match, actions, buffer_id=None):
  36.         ofproto = datapath.ofproto
  37.         parser = datapath.ofproto_parser
  38.  
- 39.         inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
+ 39.         instructions = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
  40.         if buffer_id:
  41.             mod = parser.OFPFlowMod(datapath=datapath, buffer_id=buffer_id, priority=priority,
  42.                                     match=match, instructions=inst)
@@ -46,7 +46,7 @@
  46.         datapath.send_msg(mod)
  47.  
  48.     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
- 49.     def _packet_in_handler(self, ev):
+ 49.     def _handle_packet_in(self, ev):
  50.         if ev.msg.msg_len < ev.msg.total_len:
  51.             self.logger.debug("Packet truncated: only %s of %s bytes", ev.msg.msg_len, ev.msg.total_len)
  52.  
@@ -85,10 +85,10 @@
  85.         if out_port != ofproto.OFPP_FLOOD:
  86.             match = parser.OFPMatch(in_port=in_port, eth_dst=dst)
  87.             if msg.buffer_id != ofproto.OFP_NO_BUFFER:
- 88.                 self.add_flow(datapath, 1, match, actions, msg.buffer_id)
+ 88.                 self.install_flow(datapath, 1, match, actions, msg.buffer_id)
  89.                 return
  90.             else:
- 91.                 self.add_flow(datapath, 1, match, actions)
+ 91.                 self.install_flow(datapath, 1, match, actions)
  92.  
  93.         data = None
  94.         if msg.buffer_id == ofproto.OFP_NO_BUFFER:
@@ -175,4 +175,3 @@
 175.         self.logger.info('Speed of mitigation for %s: %s seconds' % (cname, detection_to_mitigation_time))
 176.  
 177.         del connections[cname]
-178
