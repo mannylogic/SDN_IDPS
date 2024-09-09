@@ -1,4 +1,4 @@
-1. from ryu.base import app_manager
+  1. from ryu.base import app_manager
   2. from datetime import datetime
   3. import time
   4. from ryu.controller.handler import set_ev_cls, CONFIG_DISPATCHER, MAIN_DISPATCHER 
@@ -28,13 +28,13 @@
  27.         # Install the table-miss flow entry to send unknown packets to the controller
  28.         match = parser.OFPMatch()
  29.         actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER, ofproto.OFPCML_NO_BUFFER)]
- 30.         self.add_flow(datapath, 0, match, actions)
+ 30.         self.install_flow(datapath, 0, match, actions)
  31.  
  32.     def add_flow(self, datapath, priority, match, actions):
  33.         ofproto = datapath.ofproto
  34.         parser = datapath.ofproto_parser
  35.  
- 36.         inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
+ 36.         instructions = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
  37.  
  38.         mod = parser.OFPFlowMod(
  39.             datapath=datapath, priority=priority, match=match,
@@ -42,7 +42,7 @@
  41.         datapath.send_msg(mod)
  42.  
  43.     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
- 44.     def _packet_in_handler(self, ev):
+ 44.     def _handle_packet_in(self, ev):
  45.         msg = ev.msg
  46.         datapath = msg.datapath
  47.         ofproto = datapath.ofproto
@@ -145,7 +145,7 @@
 144.         # Use ipv4_src instead of eth_src for IP addresses
 145.         match = datapath.ofproto_parser.OFPMatch(ipv4_src=src_ip)
 146.         actions = []
-147.         self.add_flow(datapath, 65535, match, actions)
+147.         self.install_flow(datapath, 65535, match, actions)
 148.  
 149.         mitigation_time = time.time()
 150.         self.logger.warning('Mitigation action taken for %s at %s', cname, datetime.now().time())  
