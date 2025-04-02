@@ -18,4 +18,4 @@ Rate limiting algorithms. Key performance metrics, including detection
 time, mitigation time, and the impact on legitimate traffic by measuring
 RTT, were recorded and analyzed.
 
-I have uploaded the full paper as well as Code used
+I have uploaded the full paper as well as Code used.
