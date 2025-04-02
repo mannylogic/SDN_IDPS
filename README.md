@@ -13,7 +13,7 @@ vSwitch (OvS) acting as the virtual switch, a VM that served as the
 SDN controller. Three IDPS scripts were used to detect and mitigate
 the attacks (one for each attack), two of which are bespoke scripts,
 whilst one was sourced from a top paper with slight changes made to
-it. The IDPS employed Credit- Based Threshold Random Walk and
+it. The IDPS employed Credit-Based Threshold Random Walk and
 Rate limiting algorithms. Key performance metrics, including detection
 time, mitigation time, and the impact on legitimate traffic by measuring
 RTT, were recorded and analyzed.
